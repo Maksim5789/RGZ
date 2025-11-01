@@ -1,0 +1,90 @@
+definitions: {}
+info:
+  description: powered by Flasgger
+  termsOfService: /tos
+  title: A swagger API
+  version: 0.0.1
+paths:
+  /contacts:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  example: Ivan Petrov
+                  type: string
+                phone:
+                  example: +7-999-123-45-67
+                  type: string
+              required:
+              - name
+              - phone
+              type: object
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    example: 1
+                    type: integer
+                  name:
+                    type: string
+                  phone:
+                    type: string
+                type: object
+          description: Контакт создан успешно
+        '400':
+          description: Ошибка валидации входных данных
+      summary: Создание нового контакта.
+      tags:
+      - contacts
+  /contacts/{contact_id}:
+    delete:
+      parameters:
+      - description: Идентификатор контакта
+        in: path
+        name: contact_id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: Удаление выполнено (без тела ответа)
+        '404':
+          description: Контакт не найден
+      summary: Удаление контакта по идентификатору.
+      tags:
+      - contacts
+    get:
+      parameters:
+      - description: Идентификатор контакта
+        in: path
+        name: contact_id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  phone:
+                    type: string
+                type: object
+          description: Контакт найден
+        '404':
+          description: Контакт не найден
+      summary: Получение контакта по идентификатору.
+      tags:
+      - contacts
+swagger: '2.0'
