@@ -43,7 +43,12 @@ jobs:
           node-version: 18
 
       - name: Install Redocly CLI
-        run: npm i -g @redocly/cli@latest
+        run: npm install -g @redocly/cli
+
+      - name: Ensure clean site directory
+        run: |
+          rm -rf docs/site
+          mkdir -p docs/site
 
       - name: Build ReDoc site
         run: redocly build-docs docs/openapi.yaml -o docs/site
