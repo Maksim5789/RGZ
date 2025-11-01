@@ -30,19 +30,28 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Bandit security scan (non-blocking)
+      - name: Bandit security scan
         run: bandit -r app.py -ll || true
 
       - name: Generate OpenAPI YAML
         run: python docs/generate_openapi.py
 
-      - name: Ensure clean site directory
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install Redocly CLI
+        run: npm i -g @redocly/cli@latest
+
+      # ключевой фикс: чистим и создаём директорию, а build-docs выводим в ФАЙЛ index.html
+      - name: Prepare site directory
         run: |
           rm -rf docs/site
           mkdir -p docs/site
 
       - name: Build ReDoc site
-        run: npx @redocly/cli build-docs docs/openapi.yaml -o docs/site/index.html
+        run: redocly build-docs docs/openapi.yaml --output docs/site/index.html
 
       - name: List built files
         run: ls -la docs/site
@@ -63,4 +72,5 @@ jobs:
       id-token: write
     steps:
       - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4
