@@ -27,7 +27,18 @@ from flasgger import Swagger
 # ---------------------------------------------------------------------------
 app = Flask(__name__)
 # Swagger инициализируется "как есть": /apidocs — UI, /apispec_1.json — OpenAPI JSON
-swagger = Swagger(app)
+from flasgger import Swagger
+
+swagger = Swagger(app, template={
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Телефонный справочник API",
+        "description": "REST API для управления контактами (РГЗ, вариант 1).",
+        "version": "1.0.0",
+        "contact": {"name": "Support", "email": "support@example.com"},
+        "license": {"name": "MIT"}
+    }
+})
 
 # ---------------------------------------------------------------------------
 # 2. Простейшее хранилище данных (in-memory)

@@ -50,8 +50,19 @@ jobs:
           rm -rf docs/site
           mkdir -p docs/site
 
-      - name: Build ReDoc site
-        run: redocly build-docs docs/openapi.yaml --output docs/site/index.html
+          # передадим наш шаблон и тему через конфиг
+          - name: Build ReDoc site (custom theme)
+            run: redocly build-docs docs/openapi.yaml --output docs/site/index.html --config docs/redocly.yaml
+
+          # скопируем ассеты, чтобы index.html их увидел
+          - name: Copy assets
+            run: |
+              cp docs/openapi.yaml docs/site/openapi.yaml
+              if [ -f docs/logo.svg ]; then cp docs/logo.svg docs/site/logo.svg; fi
+              if [ -f docs/favicon.ico ]; then cp docs/favicon.ico docs/site/favicon.ico; fi
+
+          - name: List built files
+            run: ls -la docs/site
 
       - name: List built files
         run: ls -la docs/site
