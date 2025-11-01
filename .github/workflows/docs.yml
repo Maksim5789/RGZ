@@ -17,13 +17,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Set up job
         uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install Python dependencies
         run: |
@@ -39,19 +39,18 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: "20"
 
       - name: Install Redocly CLI
-        run: npm i -g @redocly/cli@latest
+        run: npm install @redocly/cli -g
 
-      # ключевой фикс: чистим и создаём директорию, а build-docs выводим в ФАЙЛ index.html
       - name: Prepare site directory
         run: |
           rm -rf docs/site
           mkdir -p docs/site
 
       - name: Build ReDoc site
-        run: redocly build-docs docs/openapi.yaml --output docs/site/index.html
+        run: npx @redocly/cli build-docs docs/openapi.yaml -o docs/site/index.html
 
       - name: List built files
         run: ls -la docs/site
@@ -72,5 +71,4 @@ jobs:
       id-token: write
     steps:
       - name: Deploy to GitHub Pages
-        id: deployment
         uses: actions/deploy-pages@v4
