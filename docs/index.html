@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Телефонный справочник API — Документация</title>
+  <link rel="icon" href="./favicon.ico">
+  <style>
+    :root{
+      --primary:#4f46e5; /* indigo-600 */
+      --bg:#0f172a;      /* right panel bg */
+      --bg-soft:#f9fafb; /* sidebar bg */
+      --text:#111827;
+      --muted:#6b7280;
+    }
+    body{margin:0;background:#fff;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial}
+    .topbar{
+      position:sticky;top:0;z-index:10;
+      display:flex;align-items:center;gap:12px;
+      padding:10px 16px;background:#fff;border-bottom:1px solid #eee
+    }
+    .topbar .brand{display:flex;align-items:center;gap:10px}
+    .topbar img{height:28px}
+    .topbar .title{font-weight:700;color:var(--primary);letter-spacing:.2px}
+    .topbar .meta{margin-left:auto;color:var(--muted);font-size:12px}
+    /* делаем сайдбар светлым */
+    redoc .menu-content{background:var(--bg-soft)!important}
+    /* правая панель — тёмная */
+    redoc .right-panel{background:var(--bg)!important;color:#e5e7eb!important}
+    redoc .right-panel a{color:#93c5fd!important}
+    /* кнопки методов — фирменные */
+    redoc .http-verb{background:var(--primary)!important}
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand">
+      <img src="./logo.svg" onerror="this.style.display='none'">
+      <span class="title">Телефонный справочник API</span>
+    </div>
+    <div class="meta">OpenAPI 3.0 • Flask • ReDoc</div>
+  </div>
+  <div id="docs"></div>
+
+  <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
+  <script>
+    Redoc.init('./openapi.yaml', {
+      hideDownloadButton: false,
+      expandResponses: '200,201',
+      jsonSampleExpandLevel: 3,
+      pathInMiddlePanel: true,
+      onlyRequiredInSamples: false,
+      theme: {
+        colors: {
+          primary: { main: '#4f46e5' },
+          text: { primary: '#111827', secondary: '#374151' },
+          http: { get:'#10b981', post:'#3b82f6', delete:'#ef4444', put:'#f59e0b' }
+        },
+        typography: {
+          fontFamily: 'Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial',
+          headings: { fontWeight: '700' },
+          code: { fontSize: '13px' }
+        },
+        sidebar: { width: '300px' },
+        rightPanel: { backgroundColor: '#0f172a', textColor: '#e5e7eb', width: '40%' }
+      }
+    }, document.getElementById('docs'))
+  </script>
+</body>
+</html>
