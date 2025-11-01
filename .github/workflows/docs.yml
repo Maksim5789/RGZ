@@ -20,53 +20,62 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # ---------- Python: deps + генерация OpenAPI ----------
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Install Python dependencies
+        shell: bash
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Bandit security scan
+      - name: Bandit security scan (non-blocking)
+        shell: bash
         run: bandit -r app.py -ll || true
 
       - name: Generate OpenAPI YAML
+        shell: bash
         run: python docs/generate_openapi.py
 
+      # ---------- ReDoc: сборка с кастомной темой ----------
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
       - name: Install Redocly CLI
+        shell: bash
         run: npm i -g @redocly/cli@latest
 
-      # ключевой фикс: чистим и создаём директорию, а build-docs выводим в ФАЙЛ index.html
       - name: Prepare site directory
+        shell: bash
         run: |
+          echo "🔧 Cleaning and recreating docs/site..."
           rm -rf docs/site
           mkdir -p docs/site
 
-          # передадим наш шаблон и тему через конфиг
-          - name: Build ReDoc site (custom theme)
-            run: redocly build-docs docs/openapi.yaml --output docs/site/index.html --config docs/redocly.yaml
+      - name: Build ReDoc site (custom theme)
+        shell: bash
+        run: |
+          redocly build-docs docs/openapi.yaml \
+            --output docs/site/index.html \
+            --config docs/redocly.yaml
 
-          # скопируем ассеты, чтобы index.html их увидел
-          - name: Copy assets
-            run: |
-              cp docs/openapi.yaml docs/site/openapi.yaml
-              if [ -f docs/logo.svg ]; then cp docs/logo.svg docs/site/logo.svg; fi
-              if [ -f docs/favicon.ico ]; then cp docs/favicon.ico docs/site/favicon.ico; fi
-
-          - name: List built files
-            run: ls -la docs/site
+      - name: Copy assets
+        shell: bash
+        run: |
+          cp docs/openapi.yaml docs/site/openapi.yaml
+          [ -f docs/logo.svg ] && cp docs/logo.svg docs/site/logo.svg || true
+          [ -f docs/favicon.ico ] && cp docs/favicon.ico docs/site/favicon.ico || true
 
       - name: List built files
+        shell: bash
         run: ls -la docs/site
 
+      # ---------- Публикация на GitHub Pages ----------
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
